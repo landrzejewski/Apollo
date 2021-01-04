@@ -5,12 +5,14 @@ import SwiftHamcrest
 final class ApolloTests: XCTestCase {
     
     func testExample() {
-        switch prefix(while: { !$0.isNumber }).map({ $0.uppercased() }).parse("october1981") {
-        case .success(let output, let input):
+        switch prefix(while: { !$0.isNumber })
+            .flatMap({ _ in success(1) })
+            .parse("2october1981") {
+        case .success(let output, let rest):
             print(output)
-            print(input)
-        default:
-            print("failure")
+            print("rest: \(rest)")
+        case .failure(let rest):
+            print("rest: \(rest)")
         }
     }
     
