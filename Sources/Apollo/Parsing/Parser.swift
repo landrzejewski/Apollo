@@ -1,10 +1,25 @@
-import Foundation
+public enum Result<Output, Rest> {
+    
+    case success(Output, Rest)
+    case failure
+    
+    public func map<NewOutput>(_ transform: @escaping (Output) -> NewOutput) -> Result<NewOutput, Rest> {
+        guard case let .success(output, rest) = self else {
+            return .failure
+        }
+        return .success(transform(output), rest)
+    }
+    
+}
 
-public protocol Parser {
+public struct Parser<Input, Output> {
     
-    associatedtype Input
-    associatedtype Output
+    public let parse: (_ input: Input) -> Result<Output, Input>
     
-    func parse(_ input: Input) -> (output: Output?, rest: Input)
+    public func map<NewOutput>(_ transform: @escaping (Output) -> NewOutput) -> Parser<Input, NewOutput> {
+        Parser<Input, NewOutput> { input in
+            parse(input).map(transform)
+        }
+    }
     
 }

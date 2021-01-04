@@ -1,12 +1,17 @@
 import XCTest
 import SwiftHamcrest
-import Benchmark
 @testable import Apollo
 
 final class ApolloTests: XCTestCase {
     
     func testExample() {
-        print(Prefix { $0.isNumber }.parse("2ala ma kota"))
+        switch prefix(while: { !$0.isNumber }).map({ $0.uppercased() }).parse("october1981") {
+        case .success(let output, let input):
+            print(output)
+            print(input)
+        default:
+            print("failure")
+        }
     }
     
 }

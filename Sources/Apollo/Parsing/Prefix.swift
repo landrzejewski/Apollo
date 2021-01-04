@@ -1,17 +1,9 @@
-public struct Prefix: Parser {
-    
-    private let predicate: ((Character) -> Bool)
-    
-    public init(while predicate: @escaping (Character) -> Bool) {
-        self.predicate = predicate
-    }
-    
-    public func parse(_ input: Substring) -> (output: Substring?, rest: Substring) {
+public func prefix(while predicate: @escaping (Character) -> Bool) -> Parser<Substring, Substring> {
+    Parser { input in
         let prefix = input.prefix(while: predicate)
         if (prefix.isEmpty) {
-            return (nil, input)
+            return .failure
         }
-        return (prefix, input[prefix.endIndex...])
+        return .success(prefix, input[prefix.endIndex...])
     }
-    
 }
