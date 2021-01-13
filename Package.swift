@@ -9,10 +9,9 @@ let package = Package(
         .library(name: "Apollo", targets: ["Apollo"])
     ],
     dependencies: [
-        .package(url: "https://github.com/nschum/SwiftHamcrest", from: "2.2.2")
     ],
     targets: [
         .target(name: "Apollo", dependencies: []),
-        .testTarget(name: "ApolloTests", dependencies: ["Apollo", "SwiftHamcrest"])
+        .testTarget(name: "ApolloTests", dependencies: ["Apollo"])
     ]
 )

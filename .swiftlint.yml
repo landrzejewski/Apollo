@@ -1,0 +1,8 @@
+included:
+  - Sources
+  
+line_length: 200
+
+disabled_rules:
+  - trailing_whitespace
+  - large_tuple
