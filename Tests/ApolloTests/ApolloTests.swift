@@ -4,6 +4,8 @@ import XCTest
 final class ApolloTests: XCTestCase {
 
     func testExample() {
+        
+        print(Parsers.Rest<Substring, Substring>().parse("ala ma kota"))
 //
 //        let a: Parser<Substring, Substring> = Parser.prefix(while: { !$0.isNumber })
 //

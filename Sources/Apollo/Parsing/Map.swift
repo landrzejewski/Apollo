@@ -1,20 +1,20 @@
 extension Parser {
     
     public func map<NewOutput>(_ transform: @escaping (Output) -> NewOutput) -> Parsers.Map<Self, NewOutput> {
-        .init(parser: self, transform: transform)
+        .init(upstream: self, transform: transform)
     }
     
 }
 
 extension Parsers {
     
-    public struct Map<BaseParser, Output>: Parser where BaseParser: Parser {
+    public struct Map<Upstream, Output>: Parser where Upstream: Parser {
         
-        let parser: BaseParser
-        let transform: (BaseParser.Output) -> Output
+        let upstream: Upstream
+        let transform: (Upstream.Output) -> Output
         
-        public func parse(_ input: BaseParser.Input) -> Result<Output, BaseParser.Input> {
-            return parser.parse(input).map(transform)
+        public func parse(_ input: Upstream.Input) -> Result<Output, Upstream.Input> {
+            return upstream.parse(input).map(transform)
         }
         
     }
