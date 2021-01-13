@@ -4,16 +4,13 @@ Parser protocol
 mapOrDefault
 
 - tests
-- filter using flatMap
 - zeroOrMore separatedBy with default Parser from Parsers combinators 2  (instance method?)
 - onOf Parser from Parsers combinators 3 + variadic parameters Parser Combinators Recap: Part 2 (static)
 
 - int and double parser (based on prefix parser, with a sign)
 
-Based on collectios (Generalisation part 1)
 - prefix(String) parser (based on prefix or build in hasPrefix oor range)
 - prefix(upTo) and prefix (through) Parsing Xcode Logs: Part 1
-
 
 - betwen = prefix(upTo) and prefix (through)
 
@@ -23,8 +20,6 @@ skip/take void (fluet)
 take = zipWith
 
 main / executable Parsing Xcode Logs: Part 2
-
-Stream Genralizing part 2
 
 
 func zip<Input, OutputA, OutputB>(_ firstParser: Parser<Input, OutputA>, _ secondParser: Parser<Input, OutputB>) -> Parser<Input, (OutputA, OutputB)> {

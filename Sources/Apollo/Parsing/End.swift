@@ -1,12 +1,12 @@
 extension Parsers {
     
-    public struct Rest<Input, Output>: Parser where Input: Collection, Input.SubSequence == Input {
+    public struct End<Input, Output>: Parser where Input: Collection {
         
         // swiftlint:disable nesting
         public typealias Output = Input
         
         public func parse(_ input: Input) -> Result<Input, Input> {
-            .success(input, input[input.endIndex...])
+            input.isEmpty ? .success(input, input) : .failure("Input is not empty", input)
         }
         
     }
