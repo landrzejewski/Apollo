@@ -35,17 +35,6 @@ func zip<Input, OutputA, OutputB>(_ firstParser: Parser<Input, OutputA>, _ secon
     }
 }
 
-public func success<Input, Output>(_ output: Output) -> Parser<Input, Output> {
-    .init { input in
-        .success(output, input)
-    }
-}
-
-public func failure<Input, Output>() -> Parser<Input, Output> {
-    Parser { input in
-        .failure("", input)
-    }
-}
 
 extension Parser where Input == Substring, Output == Substring {
     

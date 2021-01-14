@@ -5,7 +5,16 @@ final class ApolloTests: XCTestCase {
 
     func testExample() {
         
-        print(Parsers.Rest<Substring, Substring>().parse("ala ma kota"))
+        print(Success(output: "test")
+                .zip(Success(output: "test"))
+                .zip(Success(output: "test"))
+                .zip(Rest<Substring, Substring>())
+                .map { $0.0 }
+                .parse("ala ma kota")
+                
+        
+        
+        )
 //
 //        let a: Parser<Substring, Substring> = Parser.prefix(while: { !$0.isNumber })
 //
