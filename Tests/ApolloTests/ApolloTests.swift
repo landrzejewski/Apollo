@@ -5,16 +5,20 @@ final class ApolloTests: XCTestCase {
 
     func testExample() {
         
-        print(Success(output: "test")
-                .zip(Success(output: "test"))
-                .zip(Success(output: "test"))
-                .zip(Rest<Substring, Substring>())
-                .map { $0.0 }
-                .parse("ala ma kota")
-                
+  
+        
+        print(levenshteinDistance(firstWord: "Łukasz", secondWord: "luk"))
         
         
-        )
+         struct Literal<Input, Output>: Parser where Input: Collection, Input.SubSequence == Input {
+            
+            public typealias Output = Input
+            
+            public func parse(_ input: Input) -> Result<Input, Input> {
+                .success(input, input)
+            }
+            
+        }
 //
 //        let a: Parser<Substring, Substring> = Parser.prefix(while: { !$0.isNumber })
 //
