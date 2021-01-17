@@ -18,4 +18,10 @@ final class AnyParserTests: XCTestCase {
         XCTAssertEqual(parser.parse(input), .failure(parserStub.cause, input))
     }
 
+    
+    func testStartsWith() {
+        print(PrefixUpTo<Substring, Substring>("\n")
+        .parse("Hellow\nWorld\n"))
+
+    }
 }
