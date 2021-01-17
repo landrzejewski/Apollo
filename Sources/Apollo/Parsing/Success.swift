@@ -2,7 +2,7 @@ public struct Success<Input, Output>: Parser {
     
     let output: Output
     
-    public init(_ output: Output) {
+    public init(with output: Output) {
         self.output = output
     }
     

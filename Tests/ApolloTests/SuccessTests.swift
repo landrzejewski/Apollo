@@ -7,7 +7,7 @@ final class SuccessTests: XCTestCase {
     private let value = "Some value"[...]
     
     func testReturnsSuccessWithoutConsumingInput() {
-        let parser = Success<Substring, Substring>(value)
+        let parser = Success<Substring, Substring>(with: value)
         XCTAssertEqual(parser.parse(input), .success(value, input))
     }
 

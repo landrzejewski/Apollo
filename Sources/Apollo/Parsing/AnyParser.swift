@@ -1,21 +1,25 @@
 extension Parser {
     
-    public func eraseToAnyParser() -> AnyParser<Input, Output, Self> {
-        .init(upstream: self)
+    public func eraseToAnyParser() -> AnyParser<Self, Output> {
+        .init(from: self)
     }
     
 }
 
-public struct AnyParser<Input, Output, Other> where Other: Parser, Other.Input == Input, Other.Output == Output {
+public struct AnyParser<SomeParser, Output>: Parser where SomeParser: Parser {
     
-    let upstream: Other
-   
-    public func parse(_ input: Input) -> Result<Output, Input> {
-        upstream.parse(input)
+    let parser: SomeParser
+    
+    public init(from parser: SomeParser) {
+        self.parser = parser
+    }
+    
+    public func parse(_ input: SomeParser.Input) -> Result<SomeParser.Output, SomeParser.Input> {
+        parser.parse(input)
     }
     
     public func eraseToAnyParser() -> Self {
-      self
+        self
     }
     
 }
