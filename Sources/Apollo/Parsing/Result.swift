@@ -1,5 +1,5 @@
 public enum Result<Value, Remainder> {
-    
+
     case success(Value, Remainder)
     case failure(String, Remainder)
     
@@ -27,5 +27,9 @@ public enum Result<Value, Remainder> {
             return .failure(cause, originalRemainder)
         }
     }
+
+}
+
+extension Result: Equatable where Value: Equatable, Remainder: Equatable {
     
 }

@@ -1,4 +1,4 @@
-public struct Rest<Input, Output>: Parser where Input: Collection, Input.SubSequence == Input {
+public struct Remainder<Input, Output>: Parser where Input: Collection, Input.SubSequence == Input {
     
     public typealias Output = Input
     
