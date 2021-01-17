@@ -17,11 +17,44 @@ final class AnyParserTests: XCTestCase {
         let parser = parserStub.eraseToAnyParser()
         XCTAssertEqual(parser.parse(input), .failure(parserStub.cause, input))
     }
-
+    
+    func remainder() -> Remainder<Substring.UTF8View, Substring.UTF8View> {
+        Remainder()
+    }
+    
+    func whitespace() -> Whitespace<Substring.UTF8View, Substring.UTF8View>  {
+        Whitespace()
+    }
     
     func testStartsWith() {
-        print(PrefixUpTo<Substring, Substring>("\n")
-        .parse("Hellow\nWorld\n"))
-
+        let a = """
+        ### ala ma kota
+        Paragraf
+        """[...].utf8
+        
+        let result = Prefix<Substring.UTF8View, Substring.UTF8View>(3)
+            .skip(whitespace())
+            .zip(remainder())
+            .map { String($0.1) }
+            .parse(a)
+        
+        
+        switch result {
+        
+        
+        case .success(let value, let r):
+            print("Value: \(value)")
+            print("Remainder: \(r)")
+            
+        case .failure(let awake, let a):
+            print("aa")
+        }
+        
+        
     }
+    
+   
+    
 }
+
+

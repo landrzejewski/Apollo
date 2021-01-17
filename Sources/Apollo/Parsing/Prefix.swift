@@ -37,6 +37,9 @@ public struct Prefix<Input, Output>: Parser where Input: Collection, Input.SubSe
     }
     
     public func parse(_ input: Input) -> Result<Input, Input> {
+        if input.isEmpty {
+            return .failure("Prefix not found", input)
+        }
         if let predicate = self.predicate {
             let prefix = input.prefix(while: predicate)
             let count = prefix.count
