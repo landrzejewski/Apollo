@@ -48,7 +48,7 @@ public struct Many<Upstream, Output, Results, Separator>: Parser where Upstream:
     
 }
 
-extension Many where Results == [Upstream.Output], Separator == Success<Input, Void> {
+extension Many where Results == [Upstream.Output], Separator == Parsers.Success<Input, Void> {
 
     public init(_ upstream: Upstream, atLeast minimum: Int = 0, atMost maximum: Int = .max) {
         self.init(upstream, into: [], atLeast: minimum, atMost: maximum) {
@@ -68,7 +68,7 @@ extension Many where Results == [Upstream.Output] {
 
 }
 
-extension Many where Separator == Success<Input, Void> {
+extension Many where Separator == Parsers.Success<Input, Void> {
 
     public init(_ upstream: Upstream, into initialResult: Results, atLeast minimum: Int = 0, atMost maximum: Int = .max,
                 _ updateAccumulatingResult: @escaping ( inout Results, Upstream.Output) -> Void) {

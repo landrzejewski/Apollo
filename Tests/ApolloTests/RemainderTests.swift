@@ -3,16 +3,12 @@ import XCTest
 
 final class RemainderTests: XCTestCase {
     
-    private let input = "Some text"[...]
-    
-    func testReturnsSuccessAndConsumesInput() {
-        let parser = Remainder<Substring, Substring>()
-        XCTAssertEqual(parser.parse(input), .success(input, emptyText))
+    func test_given_a_non_empty_input_when_parse_the_input_then_returns_success_with_the_input_and_an_empty_remainder() {
+        XCTAssertEqual(Remainder().parse(testInput), .success(testInput, emptyText))
     }
     
-    func testReturnsSuccessWhenInputIsEmpty() {
-        let parser = Remainder<Substring, Substring>()
-        XCTAssertEqual(parser.parse(emptyText), .success(emptyText, emptyText))
+    func test_given_an_empty_input_when_parse_the_input_then_returns_success_with_an_empty_value_and_an_empty_remainder() {
+        XCTAssertEqual(Remainder().parse(emptyText), .success(emptyText, emptyText))
     }
-
+    
 }

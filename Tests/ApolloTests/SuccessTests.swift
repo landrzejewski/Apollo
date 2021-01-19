@@ -3,12 +3,8 @@ import XCTest
 
 final class SuccessTests: XCTestCase {
     
-    private let input = "Some text"[...]
-    private let value = "Some value"[...]
-    
-    func testReturnsSuccessWithoutConsumingInput() {
-        let parser = Success<Substring, Substring>(with: value)
-        XCTAssertEqual(parser.parse(input), .success(value, input))
+    func test_given_a_value_when_parse_the_input_then_returns_success_with_the_value_and_the_input() {
+        XCTAssertEqual(Success(value: testValue).parse(testInput), .success(testValue, testInput))
     }
-
+    
 }

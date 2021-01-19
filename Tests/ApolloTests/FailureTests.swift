@@ -3,12 +3,8 @@ import XCTest
 
 final class FailureTests: XCTestCase {
     
-    private let input = "Some text"[...]
-    private let failureCause = "Test failure"
-    
-    func testReturnsFailureWithoutConsumingInput() {
-        let parser = Failure<Substring, Substring>(causedBy: failureCause)
-        XCTAssertEqual(parser.parse(input), .failure(failureCause, input))
+    func test_given_a_cause_when_parse_the_input_then_returns_failure_with_the_cause_and_the_input() {
+        XCTAssertEqual(Failure(cause: testCause).parse(testInput), .failure(testCause, testInput))
     }
-
+    
 }
