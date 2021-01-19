@@ -4,7 +4,8 @@ import XCTest
 final class AnyParserTests: XCTestCase {
     
     func test_given_an_erased_parser_when_parse_the_input_then_returns_result_form_the_original_parser() {
-        XCTAssertEqual(SuccessStub(value: testValue).eraseToAnyParser().eraseToAnyParser().parse(testInput), .success(testValue, testInput))
+        let parser = SuccessStub(value: testValue).eraseToAnyParser().eraseToAnyParser()
+        XCTAssertEqual(parser.parse(testInput), .success(testValue, testInput))
     }
     
 }

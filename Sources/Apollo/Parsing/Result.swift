@@ -31,5 +31,4 @@ public enum Result<Value, Remainder> {
 }
 
 extension Result: Equatable where Value: Equatable, Remainder: Equatable {
-    
 }

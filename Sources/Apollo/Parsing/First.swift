@@ -1,15 +1,20 @@
-public struct First<Input, Output>: Parser where Input: Collection, Input.SubSequence == Input {
+extension Parsers {
     
-    public typealias Output = Input.Element
-    
-    public init() {
-    }
-    
-    public func parse(_ input: Input) -> Result<Input.Element, Input> {
-        guard let first = input.first else {
-            return .failure("Empty", input)
+    public struct First<Input, Output>: Parser where Input: Collection, Input.SubSequence == Input {
+        
+        // swiftlint:disable nesting
+        public typealias Output = Input
+        
+        public func parse(_ input: Input) -> Result<Input, Input> {
+            let subsequence = input.prefix(1)
+            guard !subsequence.isEmpty else {
+                return .failure("Input has no elements", input)
+            }
+            return .success(subsequence, input.dropFirst())
         }
-        return .success(first, input.dropFirst())
+        
     }
     
 }
+
+typealias First = Parsers.First<Substring, Substring>

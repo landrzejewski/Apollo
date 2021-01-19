@@ -1,23 +1,32 @@
 extension Parser {
     
-    public func filter(_ preicate: @escaping (Output) -> Bool) -> Filter<Self, Output> {
-        .init(upstream: self, preicate: preicate)
+    public func filter(_ preicate: @escaping (Output) -> Bool) -> Parsers.Filter<Self, Output> {
+        .init(parser: self, preicate: preicate)
     }
     
 }
 
-public struct Filter<Upstream, Output>: Parser where Upstream: Parser {
+extension Parsers {
     
-    let upstream: Upstream
-    let preicate: (Upstream.Output) -> Bool
-    
-    public func parse(_ input: Upstream.Input) -> Result<Upstream.Output, Upstream.Input> {
-        switch upstream.parse(input) {
-        case .success(let value, let remainder):
-            return preicate(value) ? .success(value, remainder) : .failure("Precondition failed", input)
-        case .failure(let cause, let remainder):
-            return .failure(cause, remainder)
+    public struct Filter<SomeParser, Output>: Parser where SomeParser: Parser {
+        
+        private let parser: SomeParser
+        private let preicate: (SomeParser.Output) -> Bool
+        
+        public init(parser: SomeParser, preicate: @escaping (SomeParser.Output) -> Bool) {
+            self.parser = parser
+            self.preicate = preicate
         }
+        
+        public func parse(_ input: SomeParser.Input) -> Result<SomeParser.Output, SomeParser.Input> {
+            switch parser.parse(input) {
+            case .success(let value, let remainder):
+                return preicate(value) ? .success(value, remainder) : .failure("The condition is not met", input)
+            case .failure(let cause, let remainder):
+                return .failure(cause, remainder)
+            }
+        }
+        
     }
     
 }
