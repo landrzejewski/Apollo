@@ -1,6 +1,6 @@
 extension Parser {
     
-    public func flatMap<OtherParser>(_ transform: @escaping (Output) -> OtherParser) -> Parsers.FlatMap<OtherParser, Self> {
+    public func flatMap<NewParser>(_ transform: @escaping (Output) -> NewParser) -> Parsers.FlatMap<NewParser, Self> {
         .init(parser: self, transform: transform)
     }
     
