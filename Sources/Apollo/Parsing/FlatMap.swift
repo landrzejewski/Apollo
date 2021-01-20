@@ -1,23 +1,32 @@
 extension Parser {
     
-    public func flatMap<OtherParser>(_ transform: @escaping (Output) -> OtherParser) -> FlatMap<OtherParser, Self> {
-        .init(upstream: self, transform: transform)
+    public func flatMap<OtherParser>(_ transform: @escaping (Output) -> OtherParser) -> Parsers.FlatMap<OtherParser, Self> {
+        .init(parser: self, transform: transform)
     }
     
 }
 
-public struct FlatMap<OtherParser, Upstream>: Parser where OtherParser: Parser, Upstream: Parser, OtherParser.Input == Upstream.Input {
+extension Parsers {
     
-    let upstream: Upstream
-    let transform: (Upstream.Output) -> OtherParser
-    
-    public func parse(_ input: Upstream.Input) -> Result<OtherParser.Output, Upstream.Input> {
-        switch upstream.parse(input).map(transform) {
-        case .success(let parser, let remainder):
-            return parser.parse(remainder).get(originalRemainder: input)
-        case .failure(let cause, let remainder):
-            return .failure(cause, remainder)
+    public struct FlatMap<OtherParser, SomeParser>: Parser where OtherParser: Parser, SomeParser: Parser, OtherParser.Input == SomeParser.Input {
+        
+        private let parser: SomeParser
+        private let transform: (SomeParser.Output) -> OtherParser
+        
+        public init(parser: SomeParser, transform: @escaping (SomeParser.Output) -> OtherParser) {
+            self.parser = parser
+            self.transform = transform
         }
+        
+        public func parse(_ input: SomeParser.Input) -> Result<OtherParser.Output, SomeParser.Input> {
+            switch parser.parse(input).map(transform) {
+            case .success(let newParser, let remainder):
+                return newParser.parse(remainder).get(originalRemainder: input)
+            case .failure(let cause, let remainder):
+                return .failure(cause, remainder)
+            }
+        }
+        
     }
     
 }

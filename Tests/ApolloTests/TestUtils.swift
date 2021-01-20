@@ -1,27 +1,25 @@
 @testable import Apollo
 
 let testInput = "Sample text"[...]
-let testValue = "Sample value"[...]
-let testCause = "Test failure"
-let emptyText = ""[...]
+let testInputConsumed = testInput.dropFirst()
+let testValue = testInput.prefix(1)
+let testValueUppercased = testValue.uppercased()[...]
+let testFailureCause = "Test failure"
+let emptySequence = ""[...]
 
 struct SuccessStub: Parser {
     
-    private let value: Substring
-    
-    init(value: Substring) {
-        self.value = value
-    }
+    let value: Substring
     
     func parse(_ input: Substring) -> Result<Substring, Substring> {
-        .success(value, input)
+        .success(value.prefix(1), input.dropFirst())
     }
     
 }
 
 struct FailureStub: Parser {
     
-    private let cause: String
+    let cause: String
     
     init(cause: String) {
         self.cause = cause
