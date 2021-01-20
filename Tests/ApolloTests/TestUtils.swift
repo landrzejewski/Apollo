@@ -12,7 +12,7 @@ struct SuccessStub: Parser {
     let value: Substring
     
     func parse(_ input: Substring) -> Result<Substring, Substring> {
-        .success(value.prefix(1), input.dropFirst())
+        return .success(value.prefix(1), input.dropFirst())
     }
     
 }
