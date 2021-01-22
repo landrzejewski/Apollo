@@ -1,83 +1,44 @@
-public struct Many<Upstream, Output, Results, Separator>: Parser where Upstream: Parser, Separator: Parser, Upstream.Input == Separator.Input {
+extension Parsers {
     
-    public let initialResult: Results
-    public let maximum: Int
-    public let minimum: Int
-    public let separator: Separator?
-    public let updateAccumulatingResult: (inout Results, Upstream.Output) -> Void
-    public let upstream: Upstream
-    
-    public init(_ upstream: Upstream, into initialResult: Results, atLeast minimum: Int = 0, atMost maximum: Int = .max, separator: Separator,
-                _ updateAccumulatingResult: @escaping (inout Results, Upstream.Output) -> Void) {
-        self.initialResult = initialResult
-        self.maximum = maximum
-        self.minimum = minimum
-        self.separator = separator
-        self.updateAccumulatingResult = updateAccumulatingResult
-        self.upstream = upstream
-    }
-    
-    public func parse(_ input: Upstream.Input) -> Result<Results, Upstream.Input> {
-        var rest = input
-        var result = initialResult
-        var count = 0
+    public struct Many<SomeParser, Output, Separator>: Parser where SomeParser: Parser, Separator: Parser, Separator.Input == SomeParser.Input, Separator.Output == SomeParser.Output {
         
-        while count < maximum, case let .success(value, remainder) = upstream.parse(rest) {
-            count += 1
-            rest = remainder
-            updateAccumulatingResult(&result, value)
-            if let separator = separator {
-                switch separator.parse(remainder) {
+        private let parser: SomeParser
+        private let separator: Separator
+        private let minimum: Int
+        private let maximum: Int
+        
+        public init(parser: SomeParser, separator: Separator, atLeast minimum: Int = 0, atMost maximum: Int = .max)
+        where Output == [SomeParser.Output], Separator: Parser, Separator.Input == SomeParser.Input, Separator.Output == SomeParser.Output {
+            self.parser = parser
+            self.separator = separator
+            self.minimum = minimum
+            self.maximum = maximum
+        }
+        
+        public func parse(_ input: SomeParser.Input) -> Result<[SomeParser.Output], SomeParser.Input> {
+            var inputRemainder = input
+            var results: [SomeParser.Output] = []
+            while results.count < maximum, case let .success(value, remainder) = parser.parse(inputRemainder) {
+                results.append(value)
+                inputRemainder = remainder
+                switch separator.parse(inputRemainder) {
                 case .success( _, let remainder):
-                   rest = remainder
-                case .failure(let cause, let remainder):
-                    guard count >= minimum else {
-                        return .failure(cause, input)
-                        
+                    inputRemainder = remainder
+                case .failure:
+                    guard results.count >= minimum else {
+                        return .failure("Too few elemnets", input)
                     }
-                    return  .success(result, remainder)
+                    return .success(results, inputRemainder)
                 }
-
             }
+            if results.count < minimum {
+                return .failure("Too few elemnets", input)
+            }
+            return .success(results, inputRemainder)
         }
-        guard count >= minimum else {
-            return .failure("Failure", input)
-        }
-        return .success(result, rest)
+        
     }
     
 }
 
-extension Many where Results == [Upstream.Output], Separator == Parsers.Success<Input, Void> {
-
-    public init(_ upstream: Upstream, atLeast minimum: Int = 0, atMost maximum: Int = .max) {
-        self.init(upstream, into: [], atLeast: minimum, atMost: maximum) {
-            $0.append($1)
-        }
-    }
-
-}
-
-extension Many where Results == [Upstream.Output] {
-
-    public init(_ upstream: Upstream, atLeast minimum: Int = 0, atMost maximum: Int = .max, separator: Separator) {
-        self.init(upstream, into: [], atLeast: minimum, atMost: maximum, separator: separator) {
-            $0.append($1)
-        }
-    }
-
-}
-
-extension Many where Separator == Parsers.Success<Input, Void> {
-
-    public init(_ upstream: Upstream, into initialResult: Results, atLeast minimum: Int = 0, atMost maximum: Int = .max,
-                _ updateAccumulatingResult: @escaping ( inout Results, Upstream.Output) -> Void) {
-        self.initialResult = initialResult
-        self.maximum = maximum
-        self.minimum = minimum
-        self.separator = nil
-        self.updateAccumulatingResult = updateAccumulatingResult
-        self.upstream = upstream
-    }
-
-}
+typealias Many = Parsers.Many

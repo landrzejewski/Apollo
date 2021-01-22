@@ -17,3 +17,5 @@ extension Parsers {
 }
 
 public typealias Success = Parsers.Success<Substring, Substring>
+
+public let empty = Success(value: "")
