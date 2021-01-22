@@ -19,8 +19,9 @@ public struct Stream<Upstream, Output>: Parser where Upstream: Parser, Upstream.
         var outputs: [Upstream.Output] = []
         while let chunk = input.next() {
             buffer.append(contentsOf: chunk)
-            while case let .success(value, _) = upstream.parse(buffer) {
+            while case let .success(value, remainder) = upstream.parse(buffer) {
                 outputs.append(value)
+                buffer = remainder
             }
         }
         return .success(outputs, input)

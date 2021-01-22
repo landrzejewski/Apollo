@@ -1,52 +1,58 @@
 extension Parser {
     
-    public func orElse<P>(_ parser: P) -> OneOf<Self, P> {
-        .init(self, parser)
+    public func orElse<SomeParser>(_ parser: SomeParser) -> Parsers.OneOf<Self, SomeParser> {
+        .init(firstParser: self, seconfParser: parser)
     }
     
 }
 
-public struct OneOfMany<Upstream, Output>: Parser where Upstream: Parser {
+extension Parsers {
     
-    public let parsers: [Upstream]
-    
-    public init(_ parsers: [Upstream]) {
-        self.parsers = parsers
+    public struct OneOfMany<SomeParser, Output>: Parser where SomeParser: Parser, Output == SomeParser.Output {
+        
+        private let parsers: [SomeParser]
+        
+        public init(parsers: [SomeParser]) {
+            self.parsers = parsers
+        }
+        
+        public init(parsers: SomeParser...) {
+            self.init(parsers: parsers)
+        }
+        
+        public func parse(_ input: SomeParser.Input) -> Result<SomeParser.Output, SomeParser.Input> {
+            for parser in self.parsers {
+                if case let .success(value, remainder) = parser.parse(input) {
+                    return .success(value, remainder)
+                }
+            }
+            return .failure("All parsers failed", input)
+        }
+        
     }
     
-    public init(_ parsers: Upstream...) {
-        self.init(parsers)
-    }
-    
-    public func parse(_ input: Upstream.Input) -> Result<Upstream.Output, Upstream.Input> {
-        for parser in self.parsers {
-            if case let .success(value, remainder) = parser.parse(input) {
+    public struct OneOf<FirstParser, SecondParser>: Parser where FirstParser: Parser, SecondParser: Parser, FirstParser.Input == SecondParser.Input, FirstParser.Output == SecondParser.Output {
+        
+        private let firstParser: FirstParser
+        private let seconfParser: SecondParser
+        
+        public init(firstParser: FirstParser, seconfParser: SecondParser) {
+            self.firstParser = firstParser
+            self.seconfParser = seconfParser
+        }
+        
+        public func parse(_ input: FirstParser.Input) -> Result<FirstParser.Output, FirstParser.Input> {
+            if case let .success(value, remainder) = firstParser.parse(input) {
                 return .success(value, remainder)
             }
+            if case let .success(value, remainder) = seconfParser.parse(input) {
+                return .success(value, remainder)
+            }
+            return .failure("Both parsers failed", input)
         }
-        return .failure("Failure", input)
+        
     }
     
 }
 
-public struct OneOf<A, B>: Parser where A: Parser, B: Parser, A.Input == B.Input, A.Output == B.Output {
-    
-    public let firstParser: A
-    public let seconfParser: B
-    
-    public init(_ firstParser: A, _ seconfParser: B) {
-        self.firstParser = firstParser
-        self.seconfParser = seconfParser
-    }
-    
-    public func parse(_ input: A.Input) -> Result<A.Output, A.Input> {
-        if case let .success(value, remainder) = firstParser.parse(input) {
-            return .success(value, remainder)
-        }
-        if case let .success(value, remainder) = seconfParser.parse(input) {
-            return .success(value, remainder)
-        }
-        return .failure("Failure", input)
-    }
-    
-}
+typealias OneOf = Parsers.OneOfMany
