@@ -1,49 +1,51 @@
-//skip on failure
-
 extension Parser {
     
-    public func skip<SecondParser>(_ secondParser: SecondParser) -> Skip<Self, SecondParser> {
-        .init(self, secondParser)
+    public func skipNext<NextParser>(_ nextParser: NextParser) -> Parsers.SkipSecond<Self, NextParser> {
+        .init(firstParser: self, secondParser: nextParser)
     }
     
-    public func skipPrevious<SecondParser>(_ secondParser: SecondParser) -> SkipFirst<Self, SecondParser> {
-        .init(self, secondParser)
-    }
-
-}
-
-public struct Skip<FirstParser, SecondParser>: Parser where FirstParser: Parser, SecondParser: Parser, FirstParser.Input == SecondParser.Input {
-    
-    let firstParser: FirstParser
-    let secondParser: SecondParser
-    
-    init(_ firstParser: FirstParser, _ secondParser: SecondParser) {
-        self.firstParser = firstParser
-        self.secondParser = secondParser
-    }
-    
-    public func parse(_ input: FirstParser.Input) -> Result<FirstParser.Output, FirstParser.Input> {
-        Zip(firstParser, secondParser).parse(input).map { firstResult, _ in
-            firstResult
-        }
+    public func skipPrevious<PreviousParser>(_ previousParser: PreviousParser) -> Parsers.SkipFirst<Self, PreviousParser> {
+        .init(firstParser: self, secondParser: previousParser)
     }
     
 }
 
-public struct SkipFirst<FirstParser, SecondParser>: Parser where FirstParser: Parser, SecondParser: Parser, FirstParser.Input == SecondParser.Input {
+extension Parsers {
     
-    let firstParser: FirstParser
-    let secondParser: SecondParser
-    
-    init(_ firstParser: FirstParser, _ secondParser: SecondParser) {
-        self.firstParser = firstParser
-        self.secondParser = secondParser
+    public struct SkipSecond<FirstParser, SecondParser>: Parser where FirstParser: Parser, SecondParser: Parser, FirstParser.Input == SecondParser.Input {
+        
+        private let firstParser: FirstParser
+        private let secondParser: SecondParser
+        
+        public init(firstParser: FirstParser, secondParser: SecondParser) {
+            self.firstParser = firstParser
+            self.secondParser = secondParser
+        }
+        
+        public func parse(_ input: FirstParser.Input) -> Result<FirstParser.Output, FirstParser.Input> {
+            Parsers.Zip(firstParser: firstParser, secondParser: secondParser).parse(input).map { firstResult, _ in
+                firstResult
+            }
+        }
+        
     }
     
-    public func parse(_ input: FirstParser.Input) -> Result<SecondParser.Output, FirstParser.Input> {
-        Zip(firstParser, secondParser).parse(input).map { _, secondParser in
-            secondParser
+    public struct SkipFirst<FirstParser, SecondParser>: Parser where FirstParser: Parser, SecondParser: Parser, FirstParser.Input == SecondParser.Input {
+        
+        private let firstParser: FirstParser
+        private let secondParser: SecondParser
+        
+        public init(firstParser: FirstParser, secondParser: SecondParser) {
+            self.firstParser = firstParser
+            self.secondParser = secondParser
         }
+        
+        public func parse(_ input: FirstParser.Input) -> Result<SecondParser.Output, FirstParser.Input> {
+            Parsers.Zip(firstParser: firstParser, secondParser: secondParser).parse(input).map { _, secondParser in
+                secondParser
+            }
+        }
+        
     }
     
 }
