@@ -8,7 +8,7 @@ final class EndTests: XCTestCase {
     }
     
     func test_given_a_non_empty_input_when_parse_the_input_then_returns_failure_with_the_input() {
-        XCTAssertEqual(End().parse(testInput), .failure("Input is not empty", testInput))
+        XCTAssertEqual(End().parse("AB"), .failure("Input is not empty", "AB"))
     }
     
 }

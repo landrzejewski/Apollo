@@ -1,9 +1,5 @@
 @testable import Apollo
 
-let testInput = "Sample text"[...]
-let testInputConsumed = testInput.dropFirst()
-let testValue = testInput.prefix(1)
-let testValueUppercased = testValue.uppercased()[...]
 let testFailureCause = "Test failure"
 let emptySequence = ""[...]
 

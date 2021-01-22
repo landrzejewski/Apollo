@@ -7,12 +7,12 @@ final class LazyTests: XCTestCase {
         var executions = 0
         let parser = Lazy<SuccessStub, Substring> {
             executions += 1
-            return SuccessStub(value: testValue)
+            return SuccessStub(value: "A")
         }
         XCTAssertEqual(executions, 0)
-        _ = parser.parse(testInput)
+        _ = parser.parse("AB")
         XCTAssertEqual(executions, 1)
-        _ = parser.parse(testInput)
+        _ = parser.parse("AB")
         XCTAssertEqual(executions, 1)
     }
 

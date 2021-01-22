@@ -9,12 +9,12 @@ final class OptionTests: XCTestCase {
     
     func test_given_two_parsers_and_a_condition_that_has_been_met_when_parse_the_input_then_returns_result_from_the_first_parser() {
         let parser = SuccessStub(value: emptySequence).flatMap(condition)
-        XCTAssertEqual(parser.parse(testInput), .success("A", testInputConsumed.dropFirst()))
+        XCTAssertEqual(parser.parse(emptySequence), .success("A", emptySequence))
     }
     
     func test_given_two_parsers_and_a_condition_that_has_not_been_met_when_parse_the_input_then_returns_result_from_the_second_parser() {
-        let parser = SuccessStub(value: testInput).flatMap(condition)
-        XCTAssertEqual(parser.parse(testInput), .success("B", testInputConsumed.dropFirst()))
+        let parser = SuccessStub(value: "A").flatMap(condition)
+        XCTAssertEqual(parser.parse("AB"), .success("B", emptySequence))
     }
     
 }

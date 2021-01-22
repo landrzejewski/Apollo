@@ -38,7 +38,7 @@ final class ZipTests: XCTestCase {
     
     func test_given_four_not_failing_parsers_when_parse_the_input_then_returns_success_with_values_from_all_four_parsers_and_the_input_remainder() {
         let parser = SuccessStub(value: "A").zip(SuccessStub(value: "B")).zip(SuccessStub(value: "C")).zip(SuccessStub(value: "D"))
-        switch parser.parse("ABC") {
+        switch parser.parse("ABCD") {
         case .success(let value, let remainder):
             XCTAssertTrue(value == ("A", "B", "C", "D"))
             XCTAssertEqual(remainder, emptySequence)
@@ -49,7 +49,7 @@ final class ZipTests: XCTestCase {
     
     func test_given_five_not_failing_parsers_when_parse_the_input_then_returns_success_with_values_from_all_five_parsers_and_the_input_remainder() {
         let parser = SuccessStub(value: "A").zip(SuccessStub(value: "B")).zip(SuccessStub(value: "C")).zip(SuccessStub(value: "D")).zip(SuccessStub(value: "E"))
-        switch parser.parse("ABCE") {
+        switch parser.parse("ABCDE") {
         case .success(let value, let remainder):
             XCTAssertTrue(value == ("A", "B", "C", "D", "E"))
             XCTAssertEqual(remainder, emptySequence)
