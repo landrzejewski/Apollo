@@ -1,3 +1,5 @@
+//skip on failure
+
 extension Parser {
     
     public func skip<SecondParser>(_ secondParser: SecondParser) -> Skip<Self, SecondParser> {

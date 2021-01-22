@@ -1,28 +1,32 @@
 extension Parser {
     
-    public func pipe<Downstream>(_ downstream: Downstream) -> Pipe<Self, Downstream> {
-        .init(self, downstream)
+    public func pipe<SecondParser>(_ secondParser: SecondParser) -> Parsers.Pipe<Self, SecondParser> {
+        .init(self, secondParser)
     }
     
 }
 
-public struct Pipe<Upstream, Downstream>: Parser where Upstream: Parser, Downstream: Parser, Upstream.Output == Downstream.Input, Upstream.Output == Upstream.Input {
-   
-    let upstream: Upstream
-    let downstream: Downstream
+extension Parsers {
     
-    init(_ upstream: Upstream, _ downstream: Downstream) {
-        self.upstream = upstream
-        self.downstream = downstream
-    }
-    
-    public func parse(_ input: Upstream.Input) -> Result<Downstream.Output, Upstream.Input> {
-        switch upstream.parse(input) {
-        case .success(let output, _):
-            return downstream.parse(output)
-        case .failure(let cause, let remainder):
-            return .failure(cause, remainder)
+    public struct Pipe<FirstParser, SecondParser>: Parser where FirstParser: Parser, SecondParser: Parser, FirstParser.Output == SecondParser.Input, FirstParser.Output == FirstParser.Input {
+        
+        let firstParser: FirstParser
+        let secondParser: SecondParser
+        
+        init(_ firstParser: FirstParser, _ secondParser: SecondParser) {
+            self.firstParser = firstParser
+            self.secondParser = secondParser
         }
+        
+        public func parse(_ input: FirstParser.Input) -> Result<SecondParser.Output, FirstParser.Input> {
+            switch firstParser.parse(input) {
+            case .success(let output, _):
+                return secondParser.parse(output)
+            case .failure(let cause, let remainder):
+                return .failure(cause, remainder)
+            }
+        }
+        
     }
     
 }

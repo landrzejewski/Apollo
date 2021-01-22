@@ -5,11 +5,8 @@ import PackageDescription
 
 let package = Package(
     name: "Apollo",
-    products: [
-        .library(name: "Apollo", targets: ["Apollo"])
-    ],
-    dependencies: [
-    ],
+    products: [],
+    dependencies: [],
     targets: [
         .target(name: "Apollo", dependencies: []),
         .testTarget(name: "ApolloTests", dependencies: ["Apollo"])
